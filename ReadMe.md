@@ -5,7 +5,7 @@ Docker汉化  Docker中文版  Docker Desktop汉化
 
 ## 使用方法
 1. 关闭Docker Desktop
-2. 在Docker安装目录（默认为`C:\Program Files\Docker\Docker\frontend\resources`）找到app.asar文件并将其备份，防止替换文件时出现意外。
+2. 在Docker安装目录（默认为`C:\Program Files\Docker\Docker\frontend\resources`）找到app.asar文件并将其备份，防止出现意外。
 3. 将从本仓库下载的app.asar文件替换原文件
 
 ## 最新版本效果图
