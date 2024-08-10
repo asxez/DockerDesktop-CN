@@ -5,11 +5,11 @@ Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows
 
 <br>
 
-已发布汉化脚本，有需要的自行前往，但请遵守仓库相关许可，否则后果自负。
+<font color="red">已发布汉化脚本，有需要的自行前往，但请遵守仓库相关许可，否则后果自负。</font>
 
-<big><u>**注意：本仓库仍然会发布各个版本的汉化包！！！**</u></big>
+<font color="red"><big><u>**注意：本仓库仍然会发布各个版本的汉化包！！！**</u></big></font>
 
-汉化脚本仓库【 https://github.com/asxez/DDCS 】
+<font color="red">汉化脚本仓库【 https://github.com/asxez/DDCS 】</font>
 
 ## 使用方法
 1. 关闭Docker Desktop
