@@ -1,7 +1,7 @@
 # Docker Desktop汉化包
-本仓库提供Docker Desktop 汉化包。
+本仓库提供最新版本Docker Desktop 汉化包。
 
-Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows
+Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 
 <br>
 
@@ -23,6 +23,8 @@ Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows
 ![](images/4.33/4.png)
 
 ## 历史更新
+2024.8.12 更新4.32 MAC版汉化包
+
 2024.8.10 发布首个汉化脚本版本
 
 2024.8.9 更新4.33版本汉化包
