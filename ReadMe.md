@@ -13,7 +13,7 @@ Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 
 ## 使用方法
 1. 关闭Docker Desktop
-2. 在Docker安装目录（默认为`C:\Program Files\Docker\Docker\frontend\resources`）找到app.asar文件并将其备份，防止出现意外。
+2. 在Docker安装目录（Windows下默认为`C:\Program Files\Docker\Docker\frontend\resources`）找到app.asar文件并将其备份，防止出现意外。
 3. 将从本仓库下载的asar文件改名为app.asar后替换原文件
 
 ## 最新版本效果图
@@ -23,6 +23,8 @@ Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 ![](images/4.33/4.png)
 
 ## 历史更新
+2024.8.28 更新4.33 MAC版汉化包
+
 2024.8.12 更新4.32 MAC版汉化包
 
 2024.8.10 发布首个汉化脚本版本
