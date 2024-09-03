@@ -17,12 +17,14 @@ Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 3. 将从本仓库下载的asar文件改名为app.asar后替换原文件
 
 ## 最新版本效果图
-![](images/4.33/1.png)
-![](images/4.33/2.png)
-![](images/4.33/3.png)
-![](images/4.33/4.png)
+![](images/4.34/1.png)
+![](images/4.34/2.png)
+![](images/4.34/3.png)
+![](images/4.34/4.png)
 
 ## 历史更新
+2024.9.3 更新4.34版本汉化包
+
 2024.8.28 更新4.33 MAC版汉化包
 
 2024.8.12 更新4.32 MAC版汉化包
