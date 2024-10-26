@@ -3,6 +3,7 @@
 
 Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 
+Windows arm 用户以及 Mac Apple 用户只能使用脚本进行汉化。这两个架构的汉化包本仓库不予提供。
 <br>
 
 <font color=red>已发布汉化脚本，有需要的自行前往，但请遵守仓库相关许可，否则后果自负。</font>
@@ -17,12 +18,20 @@ Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 3. 将从本仓库下载的asar文件改名为app.asar后替换原文件
 
 ## 最新版本效果图
-![](images/4.34/1.png)
-![](images/4.34/2.png)
-![](images/4.34/3.png)
-![](images/4.34/4.png)
+### Windows
+![](images/4.35/1.1.png)
+![](images/4.35/1.2.png)
+
+[//]: # (![]&#40;images/4.34/3.png&#41;)
+
+[//]: # (![]&#40;images/4.34/4.png&#41;)
+
+### Mac
+![](images/4.35/2.1.png)
 
 ## 历史更新
+2024.10.26 更新4.35版本汉化包
+
 2024.9.3 更新4.34版本汉化包
 
 2024.8.28 更新4.33 MAC版汉化包
