@@ -3,7 +3,7 @@
 
 Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 
-Windows arm 用户以及 Mac Apple 用户只能使用脚本进行汉化。这两个架构的汉化包本仓库不予提供。
+Windows arm 用户只能使用脚本进行汉化。这个架构的汉化包本仓库不予提供。
 <br>
 
 <font color=red>已发布汉化脚本，有需要的自行前往，但请遵守仓库相关许可，否则后果自负。</font>
