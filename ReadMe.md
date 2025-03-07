@@ -3,7 +3,9 @@
 
 Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 
-Windows arm 用户只能使用脚本进行汉化。这个架构的汉化包本仓库不予提供。
+~~Windows arm 用户只能使用脚本进行汉化。这个架构的汉化包本仓库不予提供。~~
+
+**注意: 自 4.39 版本后, 汉化 Asar 包会跟随 DockerDesktop 安装程序一起发布在 [Releases](https://github.com/asxez/DockerDesktop-CN/releases) 页面**
 <br>
 
 <font color=red>已发布汉化脚本，有需要的自行前往，但请遵守仓库相关许可，否则后果自负。</font>
