@@ -1,0 +1,30 @@
+name: Release DockerDesktop package
+
+on:
+  schedule:
+    - cron: '* 8 * * *' # scheduled at 08:00 everyday
+  workflow_dispatch: # on button click
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DDCS
+        uses: actions/checkout@v4
+        with:
+          repository: "asxez/DDCS"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+      - name: Release
+        run: ./release.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
