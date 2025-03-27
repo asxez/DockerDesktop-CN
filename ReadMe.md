@@ -14,9 +14,26 @@ Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 
 <font color=red>汉化脚本仓库【 https://github.com/asxez/DDCS 】</font>
 
+## 下载指南
+
+- Windows
+  - 使用 Intel/AMD 的 x64 芯片（**较为普遍**），则下载 DockerDesktop-x.x.x-Windows-x86.exe（本体）和 app-Windows-x86.asar（汉化包）
+  - 使用 arm 芯片（**较为稀有**），则下载 DockerDesktop-x.x.x-Windows-arm.exe（本体）和 app-Windows-arm.asar（汉化包）
+- Mac
+  - 使用 M 系列芯片（**新款**），则下载 DockerDesktop-x.x.x-Mac-apple.dmg（本体）和 app-Mac-apple.asar （汉化包）
+  - 使用 Intel x64 芯片（**2020前旧款**），则下载 DockerDesktop-x.x.x-Mac-intel.dmg（本体）和 app-Mac-intel.asar （汉化包）
+- Linux 
+  - Ubuntu/Debian  
+    - 使用 Intel/AMD 的 x64 芯片（**较为普遍**），则下载 DockerDesktop-x.x.x-Debian-x86.deb（本体）和 app-Debian-x86.asar（汉化包）
+    - 使用 arm 芯片（**较为稀有**），暂不支持
+  - Fedora/Arch/RHEL 暂不支持
+
 ## 使用方法
 1. 关闭Docker Desktop
-2. 在Docker安装目录（Windows下默认为`C:\Program Files\Docker\Docker\frontend\resources`，Macos下默认为`/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources`）找到app.asar文件并将其备份，防止出现意外。
+2. 在Docker安装目录找到app.asar文件并将其备份，防止出现意外。
+   - Windows下默认为`C:\Program Files\Docker\Docker\frontend\resources`
+   - Macos下默认为`/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources`
+   - Ubuntu/Debian下默认为`/opt/docker-desktop/resources`
 3. 将从本仓库下载的asar文件改名为app.asar后替换原文件
 
 ## 最新版本效果图
