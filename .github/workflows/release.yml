@@ -2,7 +2,7 @@ name: Release DockerDesktop package
 
 on:
   schedule:
-    - cron: '0 8 * * *' # scheduled at 08:00 everyday
+    - cron: '0 0 * * *' # scheduled at 08:00 everyday
   workflow_dispatch: # on button click
 
 permissions:
