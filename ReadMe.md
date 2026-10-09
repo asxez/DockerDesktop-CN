@@ -35,6 +35,22 @@ Docker Desktop 4.74.0 起，Windows 版会校验 `app.asar` 完整性。只替�
 macOS 同样会校验 `app.asar` 完整性，校验值位于内层 `Docker Desktop.app/Contents/Info.plist`。macOS 用户必须同时替换 `app.asar`、`app.asar.unpacked` 和汉化包内的 `Info.plist`。
 
 ## 使用方法
+
+### Windows：先确认实际安装目录
+
+下文 Windows 示例使用 `C:\Program Files\Docker\Docker` 作为安装根目录。如果 Docker Desktop 安装在其他位置，请将步骤中的安装根目录替换为实际路径。
+
+在每用户安装场景中，安装根目录也可能是 `%LOCALAPPDATA%\Programs\DockerDesktop`（参见 [#82](https://github.com/asxez/DockerDesktop-CN/issues/82)）。安装在该位置时，需要备份和操作的文件为：
+
+- `%LOCALAPPDATA%\Programs\DockerDesktop\frontend\resources\app.asar`
+- `%LOCALAPPDATA%\Programs\DockerDesktop\frontend\resources\app.asar.unpacked`
+- `%LOCALAPPDATA%\Programs\DockerDesktop\frontend\Docker Desktop.exe`
+
+可以查看 Docker Desktop 快捷方式的“目标”确认可执行文件位置，再检查同一目录下的 `resources\app.asar` 与 `resources\app.asar.unpacked`。PATH 中的 `resources\bin` 路径、卸载项的 `InstallLocation` 也可以作为线索。以实际存在的文件为准，避免把汉化包复制到未使用的旧安装目录。
+
+确认路径后，按下方步骤备份并操作三个文件。`app.asar.unpacked` 仍需按原步骤合并；完整性校验和恢复要求保持一致。
+
+### 操作步骤
 1. 关闭 Docker Desktop。
 2. 下载当前 Docker Desktop 版本对应的 `app-*.zip` 汉化包并解压。
 3. 备份原文件，方便回滚：
