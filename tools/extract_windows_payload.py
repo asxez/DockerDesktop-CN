@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pefile
 
+SEVEN_ZIP_MAGIC = b"7z\xbc\xaf\x27\x1c"
+
 
 def main() -> int:
     if len(sys.argv) != 3:
@@ -22,23 +24,31 @@ def main() -> int:
         print("installer has no PE resources", file=sys.stderr)
         return 2
 
+    candidates = []
     for type_entry in pe.DIRECTORY_ENTRY_RESOURCE.entries:
         if type_entry.struct.Id != 10:  # RT_RCDATA
             continue
         for name_entry in type_entry.directory.entries:
             name = str(name_entry.name or name_entry.struct.Id)
-            if name != "DOCKERDESKTOP":
-                continue
             for lang_entry in name_entry.directory.entries:
                 data = lang_entry.data.struct
                 blob = pe.get_data(data.OffsetToData, data.Size)
-                target = output_dir / "DOCKERDESKTOP.7z"
-                target.write_bytes(blob)
-                print(target)
-                return 0
+                if blob.startswith(SEVEN_ZIP_MAGIC):
+                    candidates.append((name, len(blob), blob))
 
-    print("DOCKERDESKTOP resource not found", file=sys.stderr)
-    return 2
+    if not candidates:
+        print("no 7z payload found in installer resources", file=sys.stderr)
+        return 2
+
+    # 优先使用 DOCKERDESKTOP；否则取最大的 7z 资源。
+    preferred = [item for item in candidates if item[0].upper() == "DOCKERDESKTOP"]
+    name, _, blob = preferred[0] if preferred else max(candidates, key=lambda item: item[1])
+
+    target = output_dir / "DOCKERDESKTOP.7z"
+    target.write_bytes(blob)
+    print(target)
+    print(f"resource={name} size={len(blob)}", file=sys.stderr)
+    return 0
 
 
 if __name__ == "__main__":
