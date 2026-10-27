@@ -255,7 +255,7 @@ function ddcs() {
 
     (
         cd "tmp/package-${arch}"
-        "${root_dir}/7z/7zz" a -tzip "${root_dir}/dist/app-${arch}.zip" . -bso0 -bd
+        "${root_dir}/7z/7zz" a -tzip "${root_dir}/dist/app-${arch}.zip" . -mcu=on -bso0 -bd
     )
     rm -rf "tmp/${arch}" "tmp/app-${arch}" "tmp/app-${arch}.asar" "tmp/app-${arch}.asar.unpacked" "tmp/package-${arch}"
 }
