@@ -53,8 +53,8 @@ if ! python -c "import black" >/dev/null 2>&1; then
 fi
 
 download() {
-    local url=$1
-    local output=$2
+    local output=$1
+    local url=$2
     if [[ -s "${output}" ]]; then
         return
     fi
