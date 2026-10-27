@@ -205,7 +205,16 @@ function ddcs() {
         exit 1
     fi
 
-    app_asar=$(find "tmp/${arch}" -type f -name "app.asar" -print -quit)
+    app_asar=$(find "tmp/${arch}" -type f -path "*/frontend/resources/app.asar" -print -quit)
+    if [[ -z "${app_asar}" && $arch == Mac* ]]; then
+        app_asar=$(find "tmp/${arch}" -type f -path "*/Docker Desktop.app/Contents/Resources/app.asar" -print -quit)
+    fi
+    if [[ -z "${app_asar}" && $arch == Debian* ]]; then
+        app_asar=$(find "tmp/${arch}" -type f -path "*/opt/docker-desktop/resources/app.asar" -print -quit)
+    fi
+    if [[ -z "${app_asar}" ]]; then
+        app_asar=$(find "tmp/${arch}" -type f -name "app.asar" -print -quit)
+    fi
     if [[ -z "${app_asar}" ]]; then
         echo "未在安装包中找到 app.asar，解压目录内容：" >&2
         find "tmp/${arch}" -maxdepth 4 -print | head -100 >&2
