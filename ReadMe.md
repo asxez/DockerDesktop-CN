@@ -222,13 +222,7 @@ Release 由 `.github/workflows/release.yml` 每日检查 Docker Desktop 新版�
 
 ### Windows
 
-![](images/4.74/w1.png)
-![](images/4.74/w2.png)
-
-### Mac
-
-![img_1.png](images/4.38/img_1.png)
-![img.png](images/4.38/img.png)
+![](images/4.97/1.png)
 
 ## 更多问题？
 
