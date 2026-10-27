@@ -179,24 +179,59 @@ function ddcs() {
     rm -f "dist/app-${arch}.zip"
     rm -rf "tmp/${arch}" "tmp/app-${arch}" "tmp/app-${arch}.asar" "tmp/app-${arch}.asar.unpacked" "tmp/package-${arch}"
     ./7z/7zz x "dist/${pkg_name}" -y -o"tmp/${arch}" -bso0 -bd || true
+
     if [[ $arch == Windows* ]]; then
-        src="frontend/resources"
-        exe_path="tmp/${arch}/frontend/Docker Desktop.exe"
-    elif [[ $arch == Mac* ]]; then
-        src="Docker/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources"
-        exe_path=""
-        plist_path="tmp/${arch}/Docker/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Info.plist"
+        # 4.97+ 的 Windows 安装器改为自定义 PE，app.asar 在 RT_RCDATA/DOCKERDESKTOP 中。
+        if ! find "tmp/${arch}" -type f -name "app.asar" -print -quit | grep -q .; then
+            echo "检测到新版 Docker Windows 安装器，正在提取内嵌组件..."
+            python tools/extract_windows_payload.py "dist/${pkg_name}" "tmp/${arch}/.payload"
+            payload=$(find "tmp/${arch}/.payload" -type f -name "DOCKERDESKTOP.7z" -print -quit)
+            if [[ -z "${payload}" ]]; then
+                echo "未找到 DOCKERDESKTOP 组件" >&2
+                exit 1
+            fi
+            ./7z/7zz x "${payload}" -o"tmp/${arch}" -y -bso0 -bd
+            rm -rf "tmp/${arch}/.payload"
+        fi
     elif [[ $arch == Debian* ]]; then
-        tar -xf "tmp/${arch}/data.tar" -C "tmp/${arch}"
-        src="opt/docker-desktop/resources"
-        exe_path=""
-    else
+        data_tar=$(find "tmp/${arch}" -maxdepth 2 -type f -name "data.tar*" -print -quit)
+        if [[ -z "${data_tar}" ]]; then
+            echo "未找到 Debian 安装包的 data.tar" >&2
+            exit 1
+        fi
+        tar -xf "${data_tar}" -C "tmp/${arch}"
+    elif [[ $arch != Mac* ]]; then
         echo "unknown arch"
         exit 1
     fi
-    mv "tmp/${arch}/${src}/app.asar" "tmp/app-${arch}.asar"
-    if [ -d "tmp/${arch}/${src}/app.asar.unpacked" ]; then
-        mv "tmp/${arch}/${src}/app.asar.unpacked" "tmp/app-${arch}.asar.unpacked"
+
+    app_asar=$(find "tmp/${arch}" -type f -name "app.asar" -print -quit)
+    if [[ -z "${app_asar}" ]]; then
+        echo "未在安装包中找到 app.asar，解压目录内容：" >&2
+        find "tmp/${arch}" -maxdepth 4 -print | head -100 >&2
+        exit 1
+    fi
+    resources_dir=$(dirname "${app_asar}")
+    mv "${app_asar}" "tmp/app-${arch}.asar"
+    if [[ -d "${resources_dir}/app.asar.unpacked" ]]; then
+        mv "${resources_dir}/app.asar.unpacked" "tmp/app-${arch}.asar.unpacked"
+    fi
+
+    if [[ $arch == Windows* ]]; then
+        exe_path=$(find "tmp/${arch}" -type f -path "*/frontend/Docker Desktop.exe" -print -quit)
+        if [[ -z "${exe_path}" ]]; then
+            exe_path=$(find "tmp/${arch}" -type f -name "Docker Desktop.exe" -print -quit)
+        fi
+        if [[ -z "${exe_path}" ]]; then
+            echo "未找到 Docker Desktop.exe" >&2
+            exit 1
+        fi
+    elif [[ $arch == Mac* ]]; then
+        plist_path=$(find "tmp/${arch}" -type f -path "*/Docker Desktop.app/Contents/Info.plist" -print -quit)
+        if [[ -z "${plist_path}" ]]; then
+            echo "未找到 macOS Info.plist" >&2
+            exit 1
+        fi
     fi
 
     "${asar_bin}" extract "tmp/app-${arch}.asar" "tmp/app-${arch}"

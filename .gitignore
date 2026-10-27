@@ -9,3 +9,4 @@ app.asar.unpacked
 *.asar
 node_modules
 .codegraph
+.tmp
