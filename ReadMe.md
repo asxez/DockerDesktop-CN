@@ -1,22 +1,17 @@
 # Docker Desktop 汉化包
-本仓库提供 Docker Desktop 汉化包。Release 页面会随 Docker Desktop 版本发布对应平台安装程序和汉化包。
+
+本仓库同时提供 Docker Desktop 汉化包与汉化脚本，Release 页面会随 Docker Desktop 版本发布对应平台安装程序和汉化包。
+
+> 原脚本仓库 [asxez/DDCS](https://github.com/asxez/DDCS) 已归档，脚本源码已迁移到本仓库，后续维护与发布都在这里进行。
 
 Docker汉化  Docker中文版  Docker Desktop汉化 Docker Windows Docker MAC
 
 Windows x86 / Windows arm / macOS Apple Silicon / macOS Intel / Debian x86 均提供汉化包，以 Release 实际产物为准。
 
 **注意: 自 4.39 版本后，汉化包会跟随 Docker Desktop 安装程序一起发布在 [Releases](https://github.com/asxez/DockerDesktop-CN/releases) 页面。**
-<br>
 
-<font color=red>已发布汉化脚本，有需要的自行前往，但请遵守仓库相关许可，否则后果自负。</font>
+## 下载汉化包
 
-<font color=red><big><u>**注意：本仓库仍然会发布各个版本的汉化包！！！**</u></big></font>
-
-<font color=red>汉化脚本仓库【 https://github.com/asxez/DDCS 】</font>
-
-## 下载指南
-
-**当前macOS intel系列似乎仍不可用**
 Release 中的汉化包为 `app-*.zip`：
 
 - `app-Windows-x86.zip`
@@ -34,7 +29,7 @@ Release 中的汉化包为 `app-*.zip`：
 Docker Desktop 4.74.0 起，Windows 版会校验 `app.asar` 完整性。只替换 `app.asar` 会导致 Docker Desktop 无法启动，并出现 `Integrity check failed for asar archive`。Windows 用户必须同时替换 `app.asar`、`app.asar.unpacked` 和汉化包内的 `Docker Desktop.exe`。
 macOS 同样会校验 `app.asar` 完整性，校验值位于内层 `Docker Desktop.app/Contents/Info.plist`。macOS 用户必须同时替换 `app.asar`、`app.asar.unpacked` 和汉化包内的 `Info.plist`。
 
-## 使用方法
+## 汉化包使用方法
 
 ### Windows：先确认实际安装目录
 
@@ -51,7 +46,8 @@ macOS 同样会校验 `app.asar` 完整性，校验值位于内层 `Docker Deskt
 确认路径后，按下方步骤备份并操作三个文件。`app.asar.unpacked` 仍需按原步骤合并；完整性校验和恢复要求保持一致。
 
 ### 操作步骤
-1. 关闭 Docker Desktop。
+
+1. 完全退出 Docker Desktop（建议同时执行 `wsl --shutdown`）。
 2. 下载当前 Docker Desktop 版本对应的 `app-*.zip` 汉化包并解压。
 3. 备份原文件，方便回滚：
    - Windows: `C:\Program Files\Docker\Docker\frontend\resources\app.asar`
@@ -64,7 +60,7 @@ macOS 同样会校验 `app.asar` 完整性，校验值位于内层 `Docker Deskt
    - Debian/Ubuntu: `/opt/docker-desktop/resources/app.asar.unpacked`
 4. 文件操作：
    - Windows: 将汉化包内的 `app.asar` 替换到 `C:\Program Files\Docker\Docker\frontend\resources\app.asar`
-   - Windows: 将汉化包内的 `app.asar.unpacked` 合并到 `C:\Program Files\Docker\Docker\frontend\resources\app.asar.unpacked`，**注意：该处是合并，而非直接替换！(如果完成步骤6之后启动时出现错误，可以将`app.asar.unpacked`直接替换到`C:\Program Files\Docker\Docker\frontend\resources\app.asar.unpacked`)**
+   - Windows: 将汉化包内的 `app.asar.unpacked` 合并到 `C:\Program Files\Docker\Docker\frontend\resources\app.asar.unpacked`，**注意：该处是默认合并，而非直接替换。如果启动时出现错误，可以改为直接用汉化包内的 `app.asar.unpacked` 替换整个目录。**
    - Windows: 将汉化包内的 `Docker Desktop.exe` 替换到 `C:\Program Files\Docker\Docker\frontend\Docker Desktop.exe`
    - macOS: 将汉化包内的 `app.asar` 和 `app.asar.unpacked` 替换到 `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources`
    - macOS: 将汉化包内的 `Info.plist` 替换到 `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Info.plist`
@@ -75,18 +71,145 @@ macOS 同样会校验 `app.asar` 完整性，校验值位于内层 `Docker Deskt
 Windows 用户请使用管理员权限执行替换操作。恢复原版时，也需要将备份的 `Docker Desktop.exe`、`app.asar` 和 `app.asar.unpacked` 一起恢复。
 macOS 用户恢复原版时，也需要将备份的 `Info.plist`、`app.asar` 和 `app.asar.unpacked` 一起恢复。
 
+## 使用汉化脚本
+
+仓库根目录即为汉化脚本源码，`ddcs.py` 会自动定位本机 Docker Desktop 安装目录，完成解包、替换、重打包和完整性校验同步。
+
+### 环境需求
+
+- Python >= 3.10
+- Node.js >= 22
+
+### 安装依赖
+
+```bash
+pip install -r requirements.txt
+npm install
+```
+
+### 执行汉化
+
+Windows 请务必使用**管理员权限**启动终端，并先完全退出 Docker Desktop，然后进入仓库根目录执行：
+
+```bash
+python ddcs.py
+```
+
+macOS / Linux 直接执行同一命令即可。
+
+注意：
+
+- Docker Desktop 4.74.0 及以上版本会校验 `app.asar` 完整性。Windows 会在 `Docker Desktop.exe` 中记录 asar header hash，macOS 会在 `Docker Desktop.app/Contents/Info.plist` 的 `ElectronAsarIntegrity` 中记录该 hash。脚本会在替换 `app.asar` 后同步更新这些校验信息；如果没有权限，脚本会提前报错，Docker Desktop 将无法正常启动。
+- 如需使用旧版 `config.json` 精确替换逻辑，可运行 `python ddcs.py --legacy`。
+- 汉化前请备份 `app.asar`、`app.asar.unpacked` 和 `Docker Desktop.exe`（Windows）或 `Info.plist`（macOS），方便回滚。
+
+## 自动提取（翻译者 / 开发者）
+
+通过正则和简单的代码分析，自动提取 Docker Desktop 页面中出现的文本，并保存到 [extract_config.py](./lib/extract_config.py)。
+
+### Docker Desktop 4.74.0+ 完整性校验
+
+4.74.0 起，Windows 版 Docker Desktop 会在 `Docker Desktop.exe` 中记录 `resources\app.asar` 的完整性信息；macOS 会在内层 `Docker Desktop.app/Contents/Info.plist` 的 `ElectronAsarIntegrity` 中记录 `Resources/app.asar` 的完整性信息。这里的 hash 是 `app.asar` header JSON 的 SHA256，不是整个 `app.asar` 文件的 SHA256。修改或重新打包 `app.asar` 后，必须同步更新该 hash，否则 Electron 会报 `Integrity check failed for asar archive` 并拒绝启动。
+
+### 提取与翻译流程
+
+1. 运行自动提取（仅在 Docker Desktop 发布新版本后需要）：
+
+   ```bash
+   # 默认与 ddcs.py 一致，自动寻找本机 Docker Desktop app.asar 并解包
+   python ddcs_extract.py
+   ```
+
+   或手动解包 asar 后指定路径：
+
+   ```bash
+   python ddcs_extract.py --path xxx
+   ```
+
+2. 进行翻译。
+
+   [extract_config.py](./lib/extract_config.py) 中的 `config` 是一个 `Config` 列表：
+
+   ```python
+   [Config(src=英文, dst=中文, deleted_at=None), ...]
+   ```
+
+   运行自动提取后，新增配置项中：
+
+   - `src`：英文文本
+   - `dst`：为空字符串 `""` 的中文文本
+   - `deleted_at`：如果旧配置项在当前版本没有提取到，会设置为当前版本号
+
+   请在 [extract_config.py](./lib/extract_config.py) 中搜索空字符串并进行翻译。
+
+   注意事项：
+
+   - 英文文本可能为包含 JS 变量的模板字符串，如 `Images (${c.images.count})`，翻译后的中文应当保留变量，即 `镜像（${c.images.count}）`。
+   - 英文文本可能为包含替换字段（`{0}`、`{1}` 等）的格式化字符串，如 `Select {0} in the {1} column to see it running.`，翻译后的中文应当保留替换字段，即 `在 {1} 列选择 {0} 以查看其运行情况`。如果替换字段遗漏，替换阶段会输出警告日志。
+   - 对于不需要翻译的项目，请不要删除，而是将中文值设为 `None`，如 `("Python", None)`。
+   - 对于没有自动提取的文本，请添加到 [extract_config_manually.py](./lib/extract_config_manually.py)。
+
+   提取示例：
+
+   ```diff
+   config: List[Config] = [
+   - Config(src="outdated text", dst="过时文本"),
+   + Config(src="outdated text", dst="过时文本", deleted_at="4.50.0"),
+   + Config(src="new text in {0}", dst="", deleted_at=None),
+   + Config(src="Python", dst="", deleted_at=None),
+   ]
+   ```
+
+   翻译后：
+
+   ```diff
+   config: List[Config] = [
+   - Config(src="outdated text", dst="过时文本"),
+   + Config(src="outdated text", dst="过时文本", deleted_at="4.50.0"),
+   + Config(src="new text in {0}", dst="{0} 中的新文本", deleted_at=None), # 保持模板变量
+   + Config(src="Python", dst=None, deleted_at=None), # 专业词汇不需要翻译
+   ]
+   ```
+
+3. 验证翻译：
+
+   ```bash
+   python ddcs.py
+   ```
+
+   替换后启动 Docker Desktop，逐页验证。自动提取不可能完全精准，可能出现：
+
+   - 遗漏部分内容：某些地方仍为英文；将文本添加到 `extract_config_manually.py` 或优化 `extract.py`。
+   - 错误提取：Docker Desktop 页面出现报错；根据报错定位错误文本并修复（大多出现在 `extract_config_manually.py` 中，如漏掉引号等）。
+
+## 发布流程
+
+Release 由 `.github/workflows/release.yml` 每日检查 Docker Desktop 新版本并自动构建，也可以手动触发。本地构建可执行：
+
+```bash
+./release.sh
+```
+
+脚本会下载五个平台的安装包，提取 `app.asar`、执行汉化、重新打包并同步完整性校验，最后通过 `gh release create` 发布到本仓库 Releases。
+
 ## 效果图
+
 ### Windows
+
 ![](images/4.74/w1.png)
 ![](images/4.74/w2.png)
 
 ### Mac
+
 ![img_1.png](images/4.38/img_1.png)
 ![img.png](images/4.38/img.png)
 
 ## 更多问题？
+
 有问题的可以扫码加群咨询。
+
 ![](images/1.jpg)
 
 ## Stars
-如果你觉得本仓库对你有用的话，请点上一颗star。
+
+如果你觉得本仓库对你有用的话，请点上一颗 star。

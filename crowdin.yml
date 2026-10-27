@@ -1,0 +1,5 @@
+files:
+  - source: /lib/extract_config.py
+    translation: /lib/extract_config_%two_letters_code%.py
+  - source: /config.json
+    translation: /config_%two_letters_code%.json

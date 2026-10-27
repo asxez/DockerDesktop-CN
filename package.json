@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "asar": "^3.2.0"
+  }
+}

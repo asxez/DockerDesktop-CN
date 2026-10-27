@@ -2,28 +2,42 @@ name: Release DockerDesktop package
 
 on:
   schedule:
-    - cron: '0 0 * * *' # scheduled at 08:00 everyday
-  workflow_dispatch: # on button click
+    - cron: '0 0 * * *' # 每天 08:00（Asia/Shanghai）
+  workflow_dispatch: # 支持手动触发
 
 permissions:
   contents: write
 
+concurrency:
+  group: dockerdesktop-release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     steps:
-      - name: Checkout DDCS
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          repository: "asxez/DDCS"
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18.x"
+          node-version: "22.x"
+          cache: npm
+
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: Release
         run: ./release.sh
         env:
