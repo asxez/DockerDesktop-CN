@@ -207,6 +207,12 @@ function ddcs() {
     if [[ $arch == Windows* ]]; then
         patch_windows_integrity "tmp/package-${arch}/app.asar" "${exe_path}"
         cp "${exe_path}" "tmp/package-${arch}/Docker Desktop.exe"
+        cp "packaging/windows/install.bat" "tmp/package-${arch}/安装汉化.bat"
+        cp "packaging/windows/install.ps1" "tmp/package-${arch}/install.ps1"
+        cp "packaging/windows/restore.bat" "tmp/package-${arch}/恢复原版.bat"
+        cp "packaging/windows/restore.ps1" "tmp/package-${arch}/restore.ps1"
+        cp "packaging/windows/使用说明.txt" "tmp/package-${arch}/使用说明.txt"
+        printf '%s' "${version}" > "tmp/package-${arch}/version.txt"
     elif [[ $arch == Mac* ]]; then
         patch_macos_integrity "tmp/package-${arch}/app.asar" "${plist_path}"
         cp "${plist_path}" "tmp/package-${arch}/Info.plist"
@@ -230,6 +236,7 @@ notes="DockerDesktop ${version} 版本安装程序及汉化包.
 
 汉化包为 app-*.zip，包含 app.asar 和 app.asar.unpacked。
 Windows 汉化包额外包含已同步 app.asar header hash 的 Docker Desktop.exe，用于 Docker Desktop 4.74.0+ 的完整性校验。
+Windows 汉化包内附 安装汉化.bat / 恢复原版.bat，双击即可自动完成备份、替换、校验和恢复。
 Mac 汉化包额外包含已同步 app.asar header hash 的 Info.plist，用于 macOS 环境的完整性校验。
 
 汉化脚本源码已合并到本仓库，使用方法见 ReadMe。"

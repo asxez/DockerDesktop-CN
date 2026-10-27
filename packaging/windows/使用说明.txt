@@ -1,0 +1,31 @@
+﻿Docker Desktop 汉化包 - Windows 使用说明
+========================================
+
+一、安装汉化
+1. 完全退出 Docker Desktop（托盘图标右键退出）。
+2. 双击“安装汉化.bat”。
+3. Windows 弹出 UAC 提示时选择“是”，等待脚本自动完成备份、替换和校验。
+4. 完成后按提示启动 Docker Desktop。
+
+脚本会自动：
+- 查找 Docker Desktop 实际安装目录（支持 Program Files 和每用户安装）。
+- 备份 app.asar、app.asar.unpacked 和 Docker Desktop.exe。
+- 替换文件并校验 app.asar。
+- 备份保存在 %LOCALAPPDATA%\DockerDesktop-CN\backup\<时间戳>。
+
+二、恢复原版
+双击“恢复原版.bat”，选择对应备份，脚本会自动还原文件。
+
+三、常见问题
+- 如果 Windows 提示“Windows 已保护你的电脑”，点击“更多信息”->“仍要运行”。
+- 如果提示找不到 Docker Desktop：先启动一次 Docker Desktop，确认安装完整后重试。
+- 如果安装后 Docker Desktop 无法启动：双击“恢复原版.bat”还原，并确认汉化包版本与 Docker Desktop 版本一致。
+- 如果 Docker Desktop 正在运行：脚本会尝试自动关闭；若关闭失败，请手动退出后重试。
+- 请勿只替换 app.asar：Docker Desktop 4.74.0 起会校验 app.asar 完整性，必须同时替换 Docker Desktop.exe。
+
+四、手动安装（脚本不可用时）
+1. 备份原文件。
+2. 用汉化包内的 app.asar 覆盖 frontend\resources\app.asar。
+3. 用汉化包内的 app.asar.unpacked 覆盖 frontend\resources\app.asar.unpacked。
+4. 用汉化包内的 Docker Desktop.exe 覆盖 frontend\Docker Desktop.exe。
+5. 启动 Docker Desktop。

@@ -22,7 +22,7 @@ Release 中的汉化包为 `app-*.zip`：
 
 汉化包内容：
 
-- Windows 包含 `app.asar`、`app.asar.unpacked` 和已同步完整性校验的 `Docker Desktop.exe`。
+- Windows 包含 `app.asar`、`app.asar.unpacked`、已同步完整性校验的 `Docker Desktop.exe`，以及一键安装/恢复脚本 `安装汉化.bat`、`恢复原版.bat`。
 - macOS 包含 `app.asar`、`app.asar.unpacked` 和已同步完整性校验的 `Info.plist`。
 - Linux 包含 `app.asar` 和 `app.asar.unpacked`。
 
@@ -31,7 +31,25 @@ macOS 同样会校验 `app.asar` 完整性，校验值位于内层 `Docker Deskt
 
 ## 汉化包使用方法
 
-### Windows：先确认实际安装目录
+### Windows：一键安装（推荐）
+
+1. 完全退出 Docker Desktop（托盘图标右键退出）。
+2. 下载并解压对应架构的 `app-Windows-x86.zip` 或 `app-Windows-arm.zip`。
+3. 双击压缩包内的 `安装汉化.bat`。
+4. Windows 弹出 UAC 提示时选择“是”，等待脚本自动完成备份、替换和校验。
+5. 完成后按提示启动 Docker Desktop。
+
+安装脚本会自动完成以下操作：
+
+- 定位 Docker Desktop 实际安装目录，支持 `C:\Program Files\Docker\Docker` 和 `%LOCALAPPDATA%\Programs\DockerDesktop`。
+- 关闭正在运行的 Docker Desktop。
+- 备份 `app.asar`、`app.asar.unpacked` 和 `Docker Desktop.exe` 到 `%LOCALAPPDATA%\DockerDesktop-CN\backup\<时间戳>`。
+- 替换 `app.asar`、`app.asar.unpacked` 和 `Docker Desktop.exe`，并校验 `app.asar`。
+- 如版本不一致会提示确认，避免把汉化包用到错误版本。
+
+如需恢复原版，双击压缩包内的 `恢复原版.bat`，按提示选择备份即可。压缩包内还包含 `使用说明.txt`。
+
+### Windows：手动安装（脚本不可用时）
 
 下文 Windows 示例使用 `C:\Program Files\Docker\Docker` 作为安装根目录。如果 Docker Desktop 安装在其他位置，请将步骤中的安装根目录替换为实际路径。
 
@@ -43,32 +61,38 @@ macOS 同样会校验 `app.asar` 完整性，校验值位于内层 `Docker Deskt
 
 可以查看 Docker Desktop 快捷方式的“目标”确认可执行文件位置，再检查同一目录下的 `resources\app.asar` 与 `resources\app.asar.unpacked`。PATH 中的 `resources\bin` 路径、卸载项的 `InstallLocation` 也可以作为线索。以实际存在的文件为准，避免把汉化包复制到未使用的旧安装目录。
 
-确认路径后，按下方步骤备份并操作三个文件。`app.asar.unpacked` 仍需按原步骤合并；完整性校验和恢复要求保持一致。
-
-### 操作步骤
+Windows 手动操作步骤：
 
 1. 完全退出 Docker Desktop（建议同时执行 `wsl --shutdown`）。
-2. 下载当前 Docker Desktop 版本对应的 `app-*.zip` 汉化包并解压。
-3. 备份原文件，方便回滚：
-   - Windows: `C:\Program Files\Docker\Docker\frontend\resources\app.asar`
-   - Windows: `C:\Program Files\Docker\Docker\frontend\resources\app.asar.unpacked`
-   - Windows: `C:\Program Files\Docker\Docker\frontend\Docker Desktop.exe`
+2. 下载当前 Docker Desktop 版本对应的 `app-Windows-*.zip` 汉化包并解压。
+3. 备份原文件：
+   - `frontend\resources\app.asar`
+   - `frontend\resources\app.asar.unpacked`
+   - `frontend\Docker Desktop.exe`
+4. 替换文件：
+   - 用汉化包内的 `app.asar` 替换 `frontend\resources\app.asar`。
+   - 用汉化包内的 `app.asar.unpacked` 替换整个 `frontend\resources\app.asar.unpacked` 目录。
+   - 用汉化包内的 `Docker Desktop.exe` 替换 `frontend\Docker Desktop.exe`。
+5. 启动 Docker Desktop。
+
+Windows 手动操作请使用管理员权限；恢复原版时，也需要将备份的 `Docker Desktop.exe`、`app.asar` 和 `app.asar.unpacked` 一起恢复。
+
+### macOS / Linux：手动安装
+
+1. 完全退出 Docker Desktop。
+2. 下载对应平台的 `app-*.zip` 汉化包并解压。
+3. 备份原文件：
    - macOS: `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources/app.asar`
    - macOS: `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources/app.asar.unpacked`
    - macOS: `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Info.plist`
    - Debian/Ubuntu: `/opt/docker-desktop/resources/app.asar`
    - Debian/Ubuntu: `/opt/docker-desktop/resources/app.asar.unpacked`
 4. 文件操作：
-   - Windows: 将汉化包内的 `app.asar` 替换到 `C:\Program Files\Docker\Docker\frontend\resources\app.asar`
-   - Windows: 将汉化包内的 `app.asar.unpacked` 合并到 `C:\Program Files\Docker\Docker\frontend\resources\app.asar.unpacked`，**注意：该处是默认合并，而非直接替换。如果启动时出现错误，可以改为直接用汉化包内的 `app.asar.unpacked` 替换整个目录。**
-   - Windows: 将汉化包内的 `Docker Desktop.exe` 替换到 `C:\Program Files\Docker\Docker\frontend\Docker Desktop.exe`
-   - macOS: 将汉化包内的 `app.asar` 和 `app.asar.unpacked` 替换到 `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources`
-   - macOS: 将汉化包内的 `Info.plist` 替换到 `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Info.plist`
-   - Debian/Ubuntu: 将汉化包内的 `app.asar` 和 `app.asar.unpacked` 替换到 `/opt/docker-desktop/resources`
+   - macOS: 将汉化包内的 `app.asar`、`app.asar.unpacked` 替换到 `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources`，将 `Info.plist` 替换到 `/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Info.plist`。
+   - Debian/Ubuntu: 将汉化包内的 `app.asar` 和 `app.asar.unpacked` 替换到 `/opt/docker-desktop/resources`。
 5. macOS 不要对 Docker Desktop 执行 ad-hoc 重签名。如果之前已经重签过，请先恢复备份或重装原版 Docker Desktop 后再替换。
 6. 启动 Docker Desktop。
 
-Windows 用户请使用管理员权限执行替换操作。恢复原版时，也需要将备份的 `Docker Desktop.exe`、`app.asar` 和 `app.asar.unpacked` 一起恢复。
 macOS 用户恢复原版时，也需要将备份的 `Info.plist`、`app.asar` 和 `app.asar.unpacked` 一起恢复。
 
 ## 使用汉化脚本
