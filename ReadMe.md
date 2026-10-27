@@ -216,6 +216,8 @@ Release 由 `.github/workflows/release.yml` 每日检查 Docker Desktop 新版�
 
 脚本会下载五个平台的安装包，提取 `app.asar`、执行汉化、重新打包并同步完整性校验，最后通过 `gh release create` 发布到本仓库 Releases。
 
+> Docker Desktop 4.97.0 起，Windows 安装包改为自定义 PE 结构，`app.asar` 位于 PE 资源 `DOCKERDESKTOP` 的内嵌 7z 中。`release.sh` 会调用 `tools/extract_windows_payload.py` 自动提取，无需手动处理。
+
 ## 效果图
 
 ### Windows
