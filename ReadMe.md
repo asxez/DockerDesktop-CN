@@ -124,7 +124,6 @@ macOS / Linux 直接执行同一命令即可。
 注意：
 
 - Docker Desktop 4.74.0 及以上版本会校验 `app.asar` 完整性。Windows 会在 `Docker Desktop.exe` 中记录 asar header hash，macOS 会在 `Docker Desktop.app/Contents/Info.plist` 的 `ElectronAsarIntegrity` 中记录该 hash。脚本会在替换 `app.asar` 后同步更新这些校验信息；如果没有权限，脚本会提前报错，Docker Desktop 将无法正常启动。
-- 如需使用旧版 `config.json` 精确替换逻辑，可运行 `python ddcs.py --legacy`。
 - 汉化前请备份 `app.asar`、`app.asar.unpacked` 和 `Docker Desktop.exe`（Windows）或 `Info.plist`（macOS），方便回滚。
 
 ## 自动提取（翻译者 / 开发者）

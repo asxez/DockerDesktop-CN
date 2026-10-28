@@ -5,16 +5,12 @@
 # @Time    : 2024/8/9 下午4:17
 # @Author  : ASXE
 
-import json
-import multiprocessing
-import os
 import platform
 import plistlib
 import re
 import shutil
 import subprocess
 import sys
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from common import log
@@ -367,47 +363,3 @@ class DDProcessor:
         log.info(f"保留原始 asar unpacked 文件: {len(unpacked_files)} 个")
         unpack_pattern = ",".join(unpacked_files)
         return "{" + unpack_pattern + "}" if "," in unpack_pattern else unpack_pattern
-
-
-class FileProcessor:
-    def __init__(self, root_path, config_path):
-        self.root_path = root_path
-        self.config_path = config_path
-
-    def recursive_listdir(self):
-        file_paths = []
-        for root, _, files in os.walk(self.root_path):
-            for file in files:
-                if file.endswith('.js') or file.endswith('.cjs'):
-                    file_paths.append(os.path.join(root, file))
-        return file_paths
-
-    def get_transformations(self):
-        with open(self.config_path, 'r', encoding='utf-8') as f:
-            transformations = json.loads(f.read())['all']
-        for transformation in transformations:
-            yield transformation
-
-    @staticmethod
-    def process_file(file_path, search, replacement):
-        with open(file_path, 'r+', encoding='utf-8') as f:
-            content = f.read()
-            new_content = content.replace(search, replacement)
-            if new_content != content:
-                f.seek(0)
-                f.write(new_content)
-                f.truncate()
-                return True
-            else:
-                return False
-
-    def process_files(self, file_paths, search_pattern, replacement):
-        cpu_count = multiprocessing.cpu_count()
-        replaced = False
-        with ThreadPoolExecutor(max_workers=cpu_count) as executor:
-            futures = [executor.submit(self.process_file, file_path, search_pattern, replacement) for file_path in
-                       file_paths]
-            for future in futures:
-                if future.result():
-                    replaced = True
-        return replaced

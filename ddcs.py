@@ -11,7 +11,7 @@ from pathlib import Path
 
 from common import log
 from lib.extract import replace
-from lib.processor import DDProcessor, FileProcessor
+from lib.processor import DDProcessor
 
 
 def cost_time(func):
@@ -25,31 +25,7 @@ def cost_time(func):
 
 
 @cost_time
-def run(root_path: str, config_path: str, process_asar: bool):
-    log.info("脚本已启动...")
-    time.sleep(1)
-
-    if process_asar:
-        DDProcessor(True)
-
-    fp = FileProcessor(root_path, config_path)
-    file_paths = fp.recursive_listdir()
-    log.info("汉化开始")
-    for transformation in fp.get_transformations():
-        search = transformation["src"]
-        replacement = transformation["dest"]
-        replaced = fp.process_files(file_paths, search, replacement)
-        if not replaced:
-            log.warn(search)
-        else:
-            log.info(f"{search} -> {replacement}")
-
-    if process_asar:
-        DDProcessor(False)
-
-
-@cost_time
-def run_v2(root_path: str, process_asar: bool):
+def run(root_path: str, process_asar: bool):
     log.info("脚本已启动...")
     time.sleep(1)
 
@@ -62,9 +38,7 @@ def run_v2(root_path: str, process_asar: bool):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--legacy", action="store_true")
-    parser.add_argument("--v2", action="store_true", help=argparse.SUPPRESS)
+    parser = argparse.ArgumentParser(description="Docker Desktop 汉化脚本")
     parser.add_argument("--root_path", type=str, default=None)
     args = parser.parse_args()
 
@@ -75,9 +49,4 @@ if __name__ == "__main__":
     else:
         root_path = args.root_path
         process_asar = False
-    print(root_path, process_asar)
-    config_path = "./config.json"
-    if args.legacy:
-        run(root_path, config_path, process_asar)
-    else:
-        run_v2(root_path, process_asar)
+    run(root_path, process_asar)
