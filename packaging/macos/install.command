@@ -93,6 +93,7 @@ if [[ -d "$RESOURCES/app.asar.unpacked" ]]; then
     cp -R "$RESOURCES/app.asar.unpacked" "$BACKUP_DIR/app.asar.unpacked"
 fi
 printf '%s\n' "$RESOURCES" > "$BACKUP_DIR/install-path.txt"
+chown -R "$ORIGINAL_USER" "$BACKUP_DIR" 2>/dev/null || true
 
 echo "正在替换 app.asar..."
 cp -f "$PACKAGE_DIR/app.asar" "$RESOURCES/app.asar"
