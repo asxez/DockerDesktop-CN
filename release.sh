@@ -260,6 +260,17 @@ function ddcs() {
     elif [[ $arch == Mac* ]]; then
         patch_macos_integrity "tmp/package-${arch}/app.asar" "${plist_path}"
         cp "${plist_path}" "tmp/package-${arch}/Info.plist"
+        cp "packaging/macos/install.command" "tmp/package-${arch}/安装汉化.command"
+        cp "packaging/macos/restore.command" "tmp/package-${arch}/恢复原版.command"
+        cp "packaging/macos/使用说明.txt" "tmp/package-${arch}/使用说明.txt"
+        printf '%s' "${version}" > "tmp/package-${arch}/version.txt"
+        chmod +x "tmp/package-${arch}/安装汉化.command" "tmp/package-${arch}/恢复原版.command"
+    elif [[ $arch == Debian* ]]; then
+        cp "packaging/linux/install.sh" "tmp/package-${arch}/install.sh"
+        cp "packaging/linux/restore.sh" "tmp/package-${arch}/restore.sh"
+        cp "packaging/linux/使用说明.txt" "tmp/package-${arch}/使用说明.txt"
+        printf '%s' "${version}" > "tmp/package-${arch}/version.txt"
+        chmod +x "tmp/package-${arch}/install.sh" "tmp/package-${arch}/restore.sh"
     fi
 
     (
@@ -279,6 +290,8 @@ ddcs "DockerDesktop-${version}-Debian-x86.deb"
 notes="DockerDesktop ${version} 版本安装程序及汉化包.
 
 Windows 汉化包内附 安装汉化.bat / 恢复原版.bat，双击即可自动完成备份、替换、校验和恢复。
+macOS 汉化包内附 安装汉化.command / 恢复原版.command，双击并按提示授权即可。
+Linux 汉化包内附 install.sh / restore.sh，执行 sudo ./install.sh 即可。
 
 汉化脚本源码已合并到本仓库，使用方法见 ReadMe。"
 

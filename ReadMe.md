@@ -23,8 +23,8 @@ Release 中的汉化包为 `app-*.zip`：
 汉化包内容：
 
 - Windows 包含 `app.asar`、`app.asar.unpacked`、已同步完整性校验的 `Docker Desktop.exe`，以及一键安装/恢复脚本 `安装汉化.bat`、`恢复原版.bat`。
-- macOS 包含 `app.asar`、`app.asar.unpacked` 和已同步完整性校验的 `Info.plist`。
-- Linux 包含 `app.asar` 和 `app.asar.unpacked`。
+- macOS 包含 `app.asar`、`app.asar.unpacked`、已同步完整性校验的 `Info.plist`，以及一键安装/恢复脚本 `安装汉化.command`、`恢复原版.command`。
+- Linux 包含 `app.asar`、`app.asar.unpacked`，以及一键安装/恢复脚本 `install.sh`、`restore.sh`。
 
 Docker Desktop 4.74.0 起，Windows 版会校验 `app.asar` 完整性。只替换 `app.asar` 会导致 Docker Desktop 无法启动，并出现 `Integrity check failed for asar archive`。Windows 用户必须同时替换 `app.asar`、`app.asar.unpacked` 和汉化包内的 `Docker Desktop.exe`。
 macOS 同样会校验 `app.asar` 完整性，校验值位于内层 `Docker Desktop.app/Contents/Info.plist`。macOS 用户必须同时替换 `app.asar`、`app.asar.unpacked` 和汉化包内的 `Info.plist`。
@@ -77,7 +77,35 @@ Windows 手动操作步骤：
 
 Windows 手动操作请使用管理员权限；恢复原版时，也需要将备份的 `Docker Desktop.exe`、`app.asar` 和 `app.asar.unpacked` 一起恢复。
 
-### macOS / Linux：手动安装
+### macOS：一键安装（推荐）
+
+1. 完全退出 Docker Desktop（菜单栏 Docker 图标 -> Quit Docker Desktop）。
+2. 下载并解压对应的 `app-Mac-apple.zip` 或 `app-Mac-intel.zip`。
+3. 双击压缩包内的 `安装汉化.command`。
+   - 如果提示“无法打开，因为无法验证开发者”，请右键点击文件，选择“打开”。
+   - 也可以在终端执行：`chmod +x 安装汉化.command && ./安装汉化.command`
+4. 按提示输入管理员密码（sudo），等待脚本自动完成备份、替换和校验。
+5. 完成后按提示启动 Docker Desktop。
+
+脚本会备份到 `~/Library/Application Support/DockerDesktop-CN/backup/<时间戳>`。如需恢复原版，双击 `恢复原版.command`，按提示选择备份即可。
+
+### Linux：一键安装（推荐）
+
+1. 完全退出 Docker Desktop。
+2. 下载并解压 `app-Debian-x86.zip`。
+3. 在终端进入解压目录，执行：
+
+   ```bash
+   chmod +x install.sh
+   sudo ./install.sh
+   ```
+
+4. 按提示输入管理员密码，等待脚本自动完成备份、替换和校验。
+5. 完成后按提示启动 Docker Desktop。
+
+脚本会备份到 `~/.local/share/DockerDesktop-CN/backup/<时间戳>`。如需恢复原版，执行 `sudo ./restore.sh`，按提示选择备份即可。
+
+### macOS / Linux：手动安装（脚本不可用时）
 
 1. 完全退出 Docker Desktop。
 2. 下载对应平台的 `app-*.zip` 汉化包并解压。

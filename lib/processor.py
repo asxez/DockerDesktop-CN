@@ -5,6 +5,7 @@
 # @Time    : 2024/8/9 下午4:17
 # @Author  : ASXE
 
+import os
 import platform
 import plistlib
 import re
@@ -35,30 +36,69 @@ class DDProcessor:
             log.info('汉化完成')
 
     @staticmethod
+    def _windows_install_roots():
+        """按优先级返回 Windows 上可能的 Docker Desktop 安装根目录。"""
+        import winreg
+
+        roots = []
+        for hive in (winreg.HKEY_LOCAL_MACHINE, winreg.HKEY_CURRENT_USER):
+            try:
+                reg_key = winreg.OpenKey(
+                    hive, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Docker Desktop"
+                )
+                install_path, _ = winreg.QueryValueEx(reg_key, "InstallLocation")
+                winreg.CloseKey(reg_key)
+                if install_path:
+                    roots.append(Path(install_path))
+            except (FileNotFoundError, OSError):
+                continue
+
+        for env_name, relative in (
+            ("ProgramFiles", Path("Docker") / "Docker"),
+            ("LOCALAPPDATA", Path("Programs") / "DockerDesktop"),
+        ):
+            base = os.environ.get(env_name)
+            if base:
+                roots.append(Path(base) / relative)
+
+        result, seen = [], set()
+        for root in roots:
+            key = str(root).rstrip("\\/").lower()
+            if key and key not in seen:
+                seen.add(key)
+                result.append(root)
+        return result
+
+    @staticmethod
     def get_resource_path():
         system = platform.system()
         if system == "Windows":
-            import winreg
-
-            try:
-                reg_key = winreg.OpenKey(
-                    winreg.HKEY_LOCAL_MACHINE, rf"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Docker Desktop"
-                )
-                install_path, _ = winreg.QueryValueEx(reg_key, "InstallLocation")  # 获取安装路径
-                winreg.CloseKey(reg_key)
-
-                return Path(f"{install_path}/frontend/resources")
-            except FileNotFoundError:
-                log.warn('未找到Docker Desktop')
-                return None
+            for root in DDProcessor._windows_install_roots():
+                resources = root / "frontend" / "resources"
+                if (resources / "app.asar").exists():
+                    return resources
+            log.warn('未找到Docker Desktop')
+            return None
         elif system == "Darwin":
             potential_paths = [
                 Path("/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources"),
                 Path("~/Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources").expanduser(),
             ]
             for path in potential_paths:
-                if path.exists():
+                if (path / "app.asar").exists():
                     return path
+            log.warn('未找到Docker Desktop')
+            return None
+        elif system == "Linux":
+            potential_paths = [
+                Path("/opt/docker-desktop/resources"),
+                Path("/opt/docker-desktop"),
+            ]
+            for path in potential_paths:
+                if (path / "app.asar").exists():
+                    return path
+            log.warn('未找到Docker Desktop')
+            return None
         else:
             log.error(f"unsupported system: {system}")
             return None

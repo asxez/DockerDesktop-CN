@@ -1,0 +1,39 @@
+Docker Desktop 汉化包 - macOS 使用说明
+======================================
+
+一、安装汉化
+1. 完全退出 Docker Desktop（菜单栏 Docker 图标 -> Quit Docker Desktop）。
+2. 解压 app-Mac-apple.zip 或 app-Mac-intel.zip。
+3. 双击“安装汉化.command”。
+   - 如果 macOS 提示“无法打开，因为无法验证开发者”，请右键点击“安装汉化.command”，选择“打开”。
+   - 也可以在终端执行：chmod +x 安装汉化.command && ./安装汉化.command
+4. 按提示输入管理员密码（sudo），等待脚本自动完成备份、替换和校验。
+5. 完成后按提示启动 Docker Desktop。
+
+脚本会自动：
+- 查找 Docker Desktop 实际安装目录（/Applications 或 ~/Applications）。
+- 关闭正在运行的 Docker Desktop。
+- 备份 app.asar、app.asar.unpacked 和 Info.plist。
+- 替换文件并校验 app.asar。
+- 备份保存在 ~/Library/Application Support/DockerDesktop-CN/backup/<时间戳>。
+
+二、恢复原版
+双击“恢复原版.command”，选择对应备份，脚本会自动还原文件。
+如果无法双击，右键 -> 打开，或在终端执行：
+chmod +x 恢复原版.command && ./恢复原版.command
+
+三、常见问题
+- 如果提示找不到 Docker Desktop：先确认 Docker.app 在 /Applications 下，并启动过一次。
+- 如果安装后 Docker Desktop 无法启动：双击“恢复原版.command”还原。
+- 如果提示版本不一致：请下载与当前 Docker Desktop 版本一致的汉化包。
+- macOS 不要对 Docker Desktop 执行 ad-hoc 重签名。如果之前已经重签过，请先恢复备份或重装原版 Docker Desktop 后再替换。
+
+四、手动安装（脚本不可用时）
+1. 备份原文件。
+2. 用汉化包内的 app.asar 覆盖：
+   /Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources/app.asar
+3. 用汉化包内的 app.asar.unpacked 覆盖：
+   /Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources/app.asar.unpacked
+4. 用汉化包内的 Info.plist 覆盖：
+   /Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Info.plist
+5. 启动 Docker Desktop。
