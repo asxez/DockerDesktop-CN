@@ -4,6 +4,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SCRIPT_PATH="$SCRIPT_DIR/$(basename "$0")"
 
+VERSION=""
+INSTALLED_VERSION=""
+
 pause_exit() {
     echo
     read -n 1 -s -r -p "按任意键退出..." || true
@@ -31,7 +34,9 @@ else
 fi
 
 PACKAGE_DIR="$SCRIPT_DIR"
-VERSION="$(cat "$PACKAGE_DIR/version.txt" 2>/dev/null || true)"
+if [[ -f "$PACKAGE_DIR/version.txt" ]]; then
+    VERSION="$(cat "$PACKAGE_DIR/version.txt" 2>/dev/null || true)"
+fi
 
 for file in app.asar Info.plist; do
     if [[ ! -f "$PACKAGE_DIR/$file" ]]; then
@@ -62,10 +67,10 @@ fi
 APP_CONTENTS="$(cd "$RESOURCES/.." && pwd)"
 INFO_PLIST="$APP_CONTENTS/Info.plist"
 
-if [[ -n "$VERSION" && -f "$INFO_PLIST" ]]; then
+if [[ -n "${VERSION:-}" && -f "$INFO_PLIST" ]]; then
     INSTALLED_VERSION="$(defaults read "$INFO_PLIST" CFBundleShortVersionString 2>/dev/null || true)"
-    echo "汉化包版本：$VERSION；当前 Docker Desktop 版本：${INSTALLED_VERSION:-未知}"
-    if [[ -n "$INSTALLED_VERSION" && "$INSTALLED_VERSION" != "$VERSION"* && -z "${DOCKER_DESKTOP_FORCE:-}" ]]; then
+    echo "汉化包版本：${VERSION:-未知}；当前 Docker Desktop 版本：${INSTALLED_VERSION:-未知}"
+    if [[ -n "$INSTALLED_VERSION" && "$INSTALLED_VERSION" != "${VERSION:-}"* && -z "${DOCKER_DESKTOP_FORCE:-}" ]]; then
         read -r -p "版本不一致，是否继续？(y/N) " answer
         if [[ ! "$answer" =~ ^[yY] ]]; then
             echo "已取消。"

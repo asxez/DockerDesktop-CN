@@ -4,6 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SCRIPT_PATH="$SCRIPT_DIR/$(basename "$0")"
 
+VERSION=""
+
 pause_exit() {
     echo
     read -r -p "按回车键退出..." || true
@@ -30,7 +32,9 @@ else
 fi
 
 PACKAGE_DIR="$SCRIPT_DIR"
-VERSION="$(cat "$PACKAGE_DIR/version.txt" 2>/dev/null || true)"
+if [[ -f "$PACKAGE_DIR/version.txt" ]]; then
+    VERSION="$(cat "$PACKAGE_DIR/version.txt" 2>/dev/null || true)"
+fi
 RESOURCES="${DOCKER_DESKTOP_RESOURCES:-/opt/docker-desktop/resources}"
 
 for file in app.asar; do
@@ -49,8 +53,8 @@ if [[ ! -f "$RESOURCES/app.asar" ]]; then
 fi
 
 echo "安装目录：$RESOURCES"
-if [[ -n "$VERSION" ]]; then
-    echo "汉化包版本：$VERSION"
+if [[ -n "${VERSION:-}" ]]; then
+    echo "汉化包版本：${VERSION:-未知}"
 fi
 
 if [[ -z "${DOCKER_DESKTOP_SKIP_STOP:-}" ]]; then
