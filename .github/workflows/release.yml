@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '0 0 * * *' # 每天 08:00（Asia/Shanghai）
   workflow_dispatch: # 支持手动触发
+    inputs:
+      force:
+        description: "强制重建并覆盖当前版本的 Release 资源"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -42,3 +48,4 @@ jobs:
         run: ./release.sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_REBUILD: ${{ github.event.inputs.force == 'true' && '1' || '0' }}

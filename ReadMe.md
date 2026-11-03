@@ -245,6 +245,8 @@ Release 由 `.github/workflows/release.yml` 每日检查 Docker Desktop 新版�
 
 > Docker Desktop 4.97.0 起，Windows 安装包改为自定义 PE 结构，`app.asar` 位于 PE 资源 `DOCKERDESKTOP` 的内嵌 7z 中。`release.sh` 会调用 `tools/extract_windows_payload.py` 自动提取，无需手动处理。
 
+需要重新生成同一版本的 Release 资源时，在 Actions 页面手动触发 `Release DockerDesktop package`，勾选 `force` 即可覆盖当前版本资源。
+
 ## 效果图
 
 ### Windows

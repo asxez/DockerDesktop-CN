@@ -4,6 +4,7 @@ set -euo pipefail
 target_repo="asxez/DockerDesktop-CN"
 root_dir=$(pwd)
 asar_bin="./node_modules/.bin/asar"
+force_rebuild="${FORCE_REBUILD:-0}"
 
 rm -rf tmp && mkdir -p dist tmp
 
@@ -32,7 +33,7 @@ if [[ -z "${version}" || -z "${build_path}" ]]; then
 fi
 echo "Docker Desktop latest: ${version} (build_path=${build_path}), current release: ${release:-none}"
 
-if [[ "${release}" == "${version}" ]]; then
+if [[ "${release}" == "${version}" && "${force_rebuild}" != "1" ]]; then
     echo "We already have the latest version"
     exit 0
 fi
@@ -265,12 +266,14 @@ function ddcs() {
         cp "packaging/macos/使用说明.txt" "tmp/package-${arch}/使用说明.txt"
         printf '%s' "${version}" > "tmp/package-${arch}/version.txt"
         chmod +x "tmp/package-${arch}/安装汉化.command" "tmp/package-${arch}/恢复原版.command"
+        sed -i 's/\r$//' "tmp/package-${arch}/安装汉化.command" "tmp/package-${arch}/恢复原版.command" "tmp/package-${arch}/使用说明.txt"
     elif [[ $arch == Debian* ]]; then
         cp "packaging/linux/install.sh" "tmp/package-${arch}/install.sh"
         cp "packaging/linux/restore.sh" "tmp/package-${arch}/restore.sh"
         cp "packaging/linux/使用说明.txt" "tmp/package-${arch}/使用说明.txt"
         printf '%s' "${version}" > "tmp/package-${arch}/version.txt"
         chmod +x "tmp/package-${arch}/install.sh" "tmp/package-${arch}/restore.sh"
+        sed -i 's/\r$//' "tmp/package-${arch}/install.sh" "tmp/package-${arch}/restore.sh" "tmp/package-${arch}/使用说明.txt"
     fi
 
     (
@@ -295,4 +298,8 @@ Linux 汉化包内附 install.sh / restore.sh，执行 sudo ./install.sh 即可�
 
 汉化脚本源码已合并到本仓库，使用方法见 ReadMe。"
 
-gh release create "${version}" --repo "${target_repo}" --notes "$notes" ./dist/*
+if gh release view "${version}" --repo "${target_repo}" >/dev/null 2>&1; then
+    gh release upload "${version}" --repo "${target_repo}" ./dist/* --clobber
+else
+    gh release create "${version}" --repo "${target_repo}" --notes "$notes" ./dist/*
+fi
