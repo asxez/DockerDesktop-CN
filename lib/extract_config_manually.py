@@ -284,4 +284,11 @@ config_manually = [
     ('Failed to delete image', '删除镜像失败'),
     ('Failed to remove MCP server.', '移除 MCP 服务器失败。'),
 
+    # ===== 4.97 登录/列表动态文案 =====
+    ('Sign in using your work email', '使用工作邮箱登录'),
+    ('You have been signed out', '你已退出登录'),
+    ('Clear selection', '清除选择'),
+    ('Show more', '显示更多'),
+    ('Show less', '显示更少'),
+    ('Previous', '上一步'),
 ]
