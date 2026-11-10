@@ -66,10 +66,13 @@ fi
 
 BACKUP_DIR="${BACKUPS[$((choice - 1))]}"
 RESOURCES="$(cat "$BACKUP_DIR/install-path.txt")"
-if [[ ! -f "$RESOURCES/app.asar" ]]; then
+if [[ ! -d "$RESOURCES" ]]; then
     echo "原安装目录已不存在：$RESOURCES"
     pause_exit
     exit 1
+fi
+if [[ ! -f "$RESOURCES/app.asar" ]]; then
+    echo "检测到 app.asar 缺失，这可能正是 Docker Desktop 无法启动的原因，将继续恢复。"
 fi
 APP_CONTENTS="$(cd "$RESOURCES/.." && pwd)"
 INFO_PLIST="$APP_CONTENTS/Info.plist"

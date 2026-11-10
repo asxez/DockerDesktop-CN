@@ -376,8 +376,15 @@ config: List[Config] = [
         return
 
     fmt_content = black.format_str(buf.getvalue(), mode=black.Mode(line_length=120))
-    with open(Path(__file__).parent / output, "w", encoding="utf-8") as writer:
-        writer.write(fmt_content)
+    lib_dir = Path(__file__).resolve().parent
+    if ".." in output:
+        log.warn(f"output 路径非法, 已跳过写入: {output}")
+        return
+    output_path = (lib_dir / output).resolve()
+    if not output_path.is_relative_to(lib_dir):
+        log.warn(f"output 路径越界, 已跳过写入: {output}")
+        return
+    output_path.write_text(fmt_content, encoding="utf-8")
 
     log.info(
         f"新增个数: {count}, 汉化进度: {sum(1 for v in new_config.values() if v != '') * 100 / len(new_config):.2f} %"
@@ -386,7 +393,12 @@ config: List[Config] = [
 
 def replace(path: Path):
     used = {}
+    root = path.resolve()
     for file in files(path):
+        resolved = file.resolve()
+        if not resolved.is_relative_to(root):
+            log.warn(f"路径越界, 跳过: {file}")
+            continue
         with open(file, "r", encoding="utf-8") as reader:
             content = reader.read()
         # 优先替换 args_len 长的, 否则内部嵌套 children 被替换后, 外部 children 将无法替换
@@ -402,8 +414,7 @@ def replace(path: Path):
         for src, dst in config_manually:
             content = content.replace(src, dst)
 
-        with open(file, "w", encoding="utf-8") as writer:
-            writer.write(content)
+        file.write_text(content, encoding="utf-8")
     for src, conf in config_dict.items():
         if conf.deleted_at == "" and conf.dst is not None and conf.dst != "" and src not in used:
             log.warn(f"unused: {src}")
